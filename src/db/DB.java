@@ -24,7 +24,7 @@ public class DB {
 		}
 			return conn;		
 	}
-	public static void closeConnection() {
+	public static void  closeConnection() {
 		if (conn != null) {
 			try {
 			conn.close();
@@ -32,9 +32,8 @@ public class DB {
 			catch(SQLException e) {
 				throw new DbException(e.getMessage());
 			}
-			}
-	}
-	
+		}
+	}	
 	private static Properties loadProperties() {
 		try (FileInputStream fs = new FileInputStream("db.properties")){
 			Properties props = new Properties();
