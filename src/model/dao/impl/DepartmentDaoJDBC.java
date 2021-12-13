@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import db.DB;
@@ -21,8 +22,34 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 	
 	@Override
 	public void insert(Department obj) {
-		
-		
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement("INSERT INTO department "
+					+ "(Name) "
+					+ "VALUES "
+					+ "(?)",
+					Statement.RETURN_GENERATED_KEYS);
+			
+			st.setString(1, obj.getName());
+			
+			int rows = st.executeUpdate();
+			
+			if(rows > 0) {
+				ResultSet rs = st.getGeneratedKeys();
+				if(rs.next()) {
+					int id = rs.getInt(1);
+					obj.setId(id);
+				}
+			}
+			else {
+				throw new DbException("Unexpected error! No rows affected!");
+			}
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally{DB.closeStatement(st);
+		}
 	}
 
 	@Override
@@ -42,15 +69,12 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
-			st = conn.prepareStatement(
-					"SELECT * FROM department WHERE Id = ?");			
+			st = conn.prepareStatement("SELECT * FROM department WHERE Id = ?");			
 			st.setInt(1, id);			
 			rs = st.executeQuery();
 			
 			if (rs.next()) {
-				Department dp = new Department();
-				dp.setId(rs.getInt("Id"));
-				dp.setName(rs.getString("Name"));
+				Department dp = instantiateDepartment(rs);
 				return dp;
 		}
 			return null;
@@ -72,8 +96,8 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 	
 	public static Department instantiateDepartment(ResultSet rs) throws SQLException {
 		Department dep = new Department();
-		dep.setId(rs.getInt("DepartmentId"));
-		dep.setName(rs.getString("DepName"));
+		dep.setId(rs.getInt("Id"));
+		dep.setName(rs.getString("Name"));
 		return dep;
 	}
 

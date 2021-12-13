@@ -11,6 +11,13 @@ public class Program2 {
 		
 		Department depart = departmentDao.findById(3);
 		System.out.println(depart);
+		
+		
+		
+		Department dep = new Department(null, "Food");
+		departmentDao.insert(dep);
+		System.out.println("Insert! New id = " + dep.getId());
+		
 
 	}
 
