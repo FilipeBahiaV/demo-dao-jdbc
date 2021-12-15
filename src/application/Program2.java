@@ -1,4 +1,6 @@
 package application;
+import java.util.List;
+
 import model.dao.DaoFactory;
 import model.dao.DepartmentDao;
 import model.entities.Department;
@@ -22,6 +24,13 @@ public class Program2 {
 		Department depa = departmentDao.findById(9);
 		depa.setName("health");
 		departmentDao.update(depa);
+		System.out.println("Update executed: ");
+		
+		
+		List<Department> list = departmentDao.findAll();
+		for(Department bb : list) {
+			System.out.println(bb);
+		}
 
 	}
 
