@@ -18,6 +18,10 @@ public class Program2 {
 		departmentDao.insert(dep);
 		System.out.println("Insert! New id = " + dep.getId());
 		
+		
+		Department depa = departmentDao.findById(9);
+		depa.setName("health");
+		departmentDao.update(depa);
 
 	}
 
